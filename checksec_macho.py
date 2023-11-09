@@ -15,10 +15,12 @@ def has_pie(macho):
 def has_canary(macho):
     stk_check = '___stack_chk_fail'
     stk_guard = '___stack_chk_guard'
-    ipt_list = set()
-    for ipt in macho.imported_functions:
-        ipt_list.add(str(ipt))
-    return stk_check in ipt_list and stk_guard in ipt_list
+
+    has_stk_check = any(str(func).strip() == stk_check for func in macho.imported_functions)
+    has_stk_guard = any(str(func).strip() == stk_guard for func in macho.imported_functions)
+    
+    return has_stk_check and has_stk_guard
+
 
 def has_arc(macho):
     for func in macho.imported_functions:
